@@ -33,10 +33,10 @@
                               (.getAuthority uri)
                               (str (.getPath uri)
                                    (subs (:uri req) (.length proxied-path)))
-                              (:query-string req)
+                              nil
                               nil)]
          (-> {:method (:request-method req)
-              :url (str remote-uri)
+              :url (str remote-uri "?" (:query-string req))
               :headers (dissoc (:headers req) "host" "content-length")
               :body (if-let [len (get-in req [:headers "content-length"])]
                       (slurp-binary (:body req) (Integer/parseInt len)))
