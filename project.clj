@@ -1,4 +1,4 @@
-(defproject tailrecursion/ring-proxy "1.0.0-SNAPSHOT"
+(defproject tailrecursion/ring-proxy "2.0.0-SNAPSHOT"
   :description "HTTP proxy ring middleware for Clojure web applications."
   :url "https://github.com/tailrecursion/ring-proxy"
   :license {:name "Eclipse Public License"
