@@ -9,7 +9,7 @@ for Clojure web applications.
 ### Dependency
 
 ```clojure
-[tailrecursion/ring-proxy "1.0.0-SNAPSHOT"]
+[tailrecursion/ring-proxy "2.0.0-SNAPSHOT"]
 ```
 
 ### Example
