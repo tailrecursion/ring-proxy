@@ -5,5 +5,4 @@
                  :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [ring                "1.1.8"]
-                 [clj-http            "0.9.1"]]
-  :main         tailrecursion.ring-proxy)
+                 [clj-http            "0.9.1"]])

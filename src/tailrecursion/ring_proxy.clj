@@ -54,10 +54,3 @@
     (constantly {:status 404 :headers {} :body "404 - not found"})
     (wrap-proxy "" remote-uri-base http-opts)
     (run-jetty {:port listen-port})))
-
-(defn -main
-  [listen-port remote-uri-base & opts]
-  (local-proxy-server
-    (read-string listen-port)
-    remote-uri-base
-    (if-not (seq opts) {} (read-string (join " " opts)))))
