@@ -50,7 +50,7 @@
        (handler req)))))
 
 (defn run-proxy
-  [handler listen-path listen-port remote-uri http-opts]
-  (-> handler
+  [listen-path listen-port remote-uri http-opts]
+  (-> (constantly {:status 404 :headers {} :body "404 - not found"})
       (wrap-proxy listen-path remote-uri http-opts)
       (run-jetty {:port listen-port}) ))

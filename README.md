@@ -6,7 +6,7 @@ for Clojure web applications.
 ### Dependency
 
 ```clojure
-[tailrecursion/ring-proxy "2.0.1-SNAPSHOT"]
+[tailrecursion/ring-proxy "3.0.0-SNAPSHOT"]
 ```
 
 ### Example
