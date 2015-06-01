@@ -1,9 +1,10 @@
 (ns tailrecursion.ring-proxy
-  (:require [ring.middleware.cookies :refer [wrap-cookies]]
-            [ring.adapter.jetty      :refer [run-jetty]]
-            [clojure.string          :refer [join split]]
-            [clj-http.client         :refer [request]])
-  (:import (java.net URI)))
+  (:require
+    [clj-http.client         :refer [request]]
+    [clojure.string          :refer [join split]]
+    [ring.adapter.jetty      :refer [run-jetty]]
+    [ring.middleware.cookies :refer [wrap-cookies]] )
+  (:import (java.net URI)) )
 
 (defn prepare-cookies
   "Removes the :domain and :secure keys and converts the :expires key (a Date)
@@ -23,13 +24,13 @@
       buf)))
 
 (defn wrap-proxy
-  "Proxies requests to proxied-path, a local URI, to the remote URI at
-  remote-uri-base, also a string."
-  [handler ^String proxied-path remote-uri-base & [http-opts]]
+  "Proxies requests from proxied-path, a local URI, to the remote URI at
+  remote-base-uri, also a string."
+  [handler ^String proxied-path remote-base-uri & [http-opts]]
   (wrap-cookies
    (fn [req]
-     (if (.startsWith ^String (:uri req) (str proxied-path "/"))
-       (let [uri (URI. remote-uri-base)
+     (if (.startsWith ^String (:uri req) proxied-path)
+       (let [uri (URI. remote-base-uri)
              remote-uri (URI. (.getScheme uri)
                               (.getAuthority uri)
                               (str (.getPath uri)
@@ -48,9 +49,8 @@
              prepare-cookies))
        (handler req)))))
 
-(defn local-proxy-server
-  [listen-port remote-uri-base http-opts]
-  (->
-    (constantly {:status 404 :headers {} :body "404 - not found"})
-    (wrap-proxy "" remote-uri-base http-opts)
-    (run-jetty {:port listen-port})))
+(defn run-proxy
+  [handler listen-path listen-port remote-uri http-opts]
+  (-> handler
+      (wrap-proxy listen-path remote-uri http-opts)
+      (run-jetty {:port listen-port}) ))
