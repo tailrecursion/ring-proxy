@@ -1,10 +1,11 @@
 (ns tailrecursion.ring-proxy
+  (:import
+    [java.net URI] )
   (:require
     [clj-http.client         :refer [request]]
     [clojure.string          :refer [join split]]
     [ring.adapter.jetty      :refer [run-jetty]]
-    [ring.middleware.cookies :refer [wrap-cookies]] )
-  (:import (java.net URI)) )
+    [ring.middleware.cookies :refer [wrap-cookies]] ))
 
 (defn prepare-cookies
   "Removes the :domain and :secure keys and converts the :expires key (a Date)
@@ -30,13 +31,12 @@
   (wrap-cookies
    (fn [req]
      (if (.startsWith ^String (:uri req) proxied-path)
-       (let [uri (URI. remote-base-uri)
-             remote-uri (URI. (.getScheme uri)
-                              (.getAuthority uri)
-                              (str (.getPath uri)
-                                   (subs (:uri req) (.length proxied-path)))
-                              nil
-                              nil)]
+       (let [rmt-full   (URI. (str remote-base-uri "/"))
+             rmt-path   (URI. (.getScheme    rmt-full)
+                              (.getAuthority rmt-full)
+                              (.getPath      rmt-full) nil nil)
+             lcl-path   (URI. (subs (:uri req) (.length proxied-path)))
+             remote-uri (.resolve rmt-path lcl-path) ]
          (-> (merge {:method (:request-method req)
                      :url (str remote-uri "?" (:query-string req))
                      :headers (dissoc (:headers req) "host" "content-length")
